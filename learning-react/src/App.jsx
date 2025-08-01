@@ -5,7 +5,6 @@ function App() {
   return (
     <div>
       <Greeting name="John Doe" />
-      <Greeting name="Jane Smith" />
     </div>
   );
 }
