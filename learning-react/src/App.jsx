@@ -1,10 +1,11 @@
 import "./App.css";
-import { Greeting } from './components/greeting/greeting.jsx';
+import { Note } from './components/note/note.jsx';
 
 function App() {
   return (
     <div>
-      <Greeting name="John Doe" />
+      {/* <Greeting name="John Doe" /> */}
+      <Note />
     </div>
   );
 }
