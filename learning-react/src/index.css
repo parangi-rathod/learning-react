@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+*{
+  box-sizing: border-box;
+}
+
+#root {
+  display: block; /* or grid or default block */
+}
