@@ -1,5 +1,6 @@
 import "./App.css";
-import { YoutubeForm } from "./components/youtubeForm/youtubeForm.jsx";
+import {UseMemoImplementation}  from "./components/useMemoImplementation/useMemoImplementation.jsx";
+// import {useCallbackImplementation} from "./components/useCallbackImplementation/useCallbackHook.jsx"
 import { YoutubeFormFormikField } from "./components/youtubeForm/youtubeForm.jsx";
 // import {  useState } from "react";
 // import { CountryCard } from "./components/countryCard/countryCard.jsx";
@@ -57,8 +58,10 @@ function App() {
 
   return (
     <>
-      <YoutubeFormFormikField />
+      {/* <YoutubeFormFormikField /> */}
       {/* <YoutubeForm /> */}
+      <UseMemoImplementation />
+      <useCallbackImplementation />
     </>
     // <div className="w-full min-h-screen bg-gray-100 p-4 !block">
     //   <h1 className="text-3xl font-bold underline text-center mb-8">
