@@ -1,52 +1,63 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import authService from '../services/AuthService';
+import authService from "../../services/authService";
 
-const initialValues = {
-  email: "",
-  password: "",
-};
+  const initialValues = {
+    email: "",
+    password: "",
+  };
 
-const validationSchema = Yup.object({
-  email: Yup.string()
-    .required("Required")
-    .matches(
-      /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i,
-      "Invalid email format"
-    ),
-  password: Yup.string()
-    .min(8, "Password must be at least 8 characters")
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-      "Password must contain at least one uppercase letter, one lowercase letter, and one number"
-    )
-    .required("Required"),
-});
+  const validationSchema = Yup.object({
+    email: Yup.string()
+      .required("Required")
+      .matches(
+        /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i,
+        "Invalid email format"
+      ),
+    password: Yup.string()
+      .min(8, "Password must be at least 8 characters")
+      // .matches(
+      //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+      //   "Password must contain at least one uppercase letter, one lowercase letter, and one number"
+      // )
+      .required("Required"),
+  });
+
 
 const Login = () => {
+
   const loginForm = useFormik({
     initialValues,
     validationSchema,
     onSubmit: async (values, { setSubmitting, setStatus }) => {
       try {
         console.log("Submitting", values);
-        
+
         // Call AuthService login method
         const result = await authService.login(values);
-        
+
         if (result.success) {
-          setStatus({ type: "success", message: result.message || "Login successful!" });
-          
+          setStatus({
+            type: "success",
+            message: result.message || "Login successful!",
+          });
+
           // Optional: Redirect after successful login
-          setTimeout(() => {
-            window.location.href = '/dashboard'; // or use React Router navigate
-          }, 1500);
+          // setTimeout(() => {
+          //   window.location.href = '/dashboard'; // or use React Router navigate
+          // }, 1500);
         } else {
-          setStatus({ type: "error", message: result.message || "Login failed. Try again." });
+          setStatus({
+            type: "error",
+            message: result.message || "Login failed. Try again.",
+          });
         }
       } catch (err) {
         console.error("Login error:", err);
-        setStatus({ type: "error", message: "Network error. Please try again." });
+        setStatus({
+          type: "error",
+          message: "Network error. Please try again.",
+        });
       } finally {
         setSubmitting(false);
       }
@@ -196,8 +207,6 @@ const Login = () => {
           >
             {loginForm.isSubmitting ? "Signing in..." : "Sign in"}
           </button>
-
-       
         </form>
       </div>
     </div>
