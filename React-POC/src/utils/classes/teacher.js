@@ -1,5 +1,4 @@
 export const Teacher = {
-    id: "",
     name: "",
     email: "",
     dateOfBirth: "",

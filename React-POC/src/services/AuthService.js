@@ -1,8 +1,10 @@
 import { jwtDecode } from "jwt-decode";
+import axios from 'axios';
 
 class AuthService {
   constructor() {
-    this.baseURL = import.meta.env.BACKEND_API_URL; // Change to your API URL
+    this.baseURL = 'https://localhost:7154/api/';
+    console.log(this.baseURL);
     this.token = localStorage.getItem("authToken");
   }
 
@@ -43,46 +45,45 @@ class AuthService {
   // }
 
   // Login user
-  async login(credentials) {
-    try {
-      const response = await fetch(`${this.baseURL}Auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(credentials),
-      });
+async login(credentials) {
+  try {
+    const response = await axios.post(`${this.baseURL}Auth/login`, credentials, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-      const data = await response.json();
-      console.log(data);
-      if (!response.ok) {
-        throw new Error(data.message || "Login failed");
-      }
+    const data = response.data;
+    console.log(data);
 
-      // Store token and decode it
-      this.setToken(data.data);
-
-      // Decode token and save to localStorage
-      const decodedToken = this.decodeToken(data.data);
-      console.log(decodedToken);
-      if (decodedToken) {
-        localStorage.setItem("decodedToken", JSON.stringify(decodedToken));
-      }
-
-      this.setCurrentUser(data.user);
-
-      return {
-        success: true,
-        data: data,
-        message: data.message || "Login successful",
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message || "Network error occurred",
-      };
+    if (response.status !== 200 || !data) {
+      throw new Error(data?.message || "Login failed");
     }
+
+    // Store token and decode it
+    this.setToken(data.data);
+
+    // Decode token and save to localStorage
+    const decodedToken = this.decodeToken(data.data);
+    console.log(decodedToken);
+    if (decodedToken) {
+      localStorage.setItem("decodedToken", JSON.stringify(decodedToken));
+    }
+
+    this.setCurrentUser(data.user);
+
+    return {
+      success: true,
+      data: data,
+      message: data.message || "Login successful",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.response?.data?.message || error.message || "Network error occurred",
+    };
   }
+}
 
   // Clear authentication data
   clearAuthData() {
@@ -105,7 +106,8 @@ class AuthService {
 
   setToken(token) {
     this.token = token;
-    localStorage.setItem("authToken", token.data);
+    console.log(token);
+    localStorage.setItem("authToken", token);
   }
 
   // Get token

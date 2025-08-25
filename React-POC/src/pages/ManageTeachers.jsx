@@ -1,11 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AddTeacherModal from '../components/forms/AddTeacher';
+import ManageTeacherService from '../services/ManageTeacherService';
+
+
+const manageTeacherService = new ManageTeacherService();
 
 const ManageTeachers = () => {
   const [showModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [teachers, setTeachers] = useState([]); // This should come from API
+  // const [addTeacher, setAddTeacher] = useState(null);
+
+  useEffect(() => {
+    fetchTeachers();
+  }, []);
+
+const fetchTeachers = async () => {
+  try {
+    const data = await manageTeacherService.getTeachers();
+    console.log("data:", data);
+    setTeachers(Array.isArray(data.data) ? data.data : []); // <-- FIXED LINE
+  } catch (error) {
+    console.error('Error fetching teachers:', error);
+    setTeachers([]); // fallback to empty array on error
+  }
+};
 
   const openModal = (mode, teacherId = null) => {
     setIsEditMode(mode === 'edit');
@@ -17,12 +37,12 @@ const ManageTeachers = () => {
     setShowModal(false);
     setIsEditMode(false);
     setSelectedTeacher(null);
-  };
+  }; 
 
   const handleTeacherSubmit = async (formData) => {
     try {
       // API call logic here
-      console.log('Teacher data:', formData);
+      await manageTeacherService.AddTeachers(formData);
       closeModal();
       // Refresh teachers list
     } catch (error) {

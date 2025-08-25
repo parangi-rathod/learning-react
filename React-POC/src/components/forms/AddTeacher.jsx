@@ -1,40 +1,52 @@
-import React from 'react';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import subjectsEnum from "../../utils/enums/subject";
 
 const validationSchema = Yup.object({
-  name: Yup.string().required('Name is required'),
+  name: Yup.string().required("Name is required"),
   email: Yup.string()
-    .matches(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i, 'Invalid email format')
-    .required('Email is required'),
-  dateOfBirth: Yup.date().required('Date of Birth is required'),
-  dateOfEnrollment: Yup.date().required('Date of Enrollment is required'),
+    .matches(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i, "Invalid email format")
+    .required("Email is required"),
+  dateOfBirth: Yup.date().required("Date of Birth is required"),
+  dateOfEnrollment: Yup.date().required("Date of Enrollment is required"),
   salary: Yup.number()
-    .min(0, 'Salary must be a positive number')
-    .required('Salary is required'),
-  class: Yup.string().required('Class is required'),
-  subjectId: Yup.string().required('Subject is required'),
-  qualification: Yup.string().required('Qualification is required'),
+    .min(0, "Salary must be a positive number")
+    .required("Salary is required"),
+  class: Yup.string().required("Class is required"),
+  subjectId: Yup.string().required("Subject is required"),
+  qualification: Yup.string().required("Qualification is required"),
 });
 
-const AddTeacherModal = ({ isOpen, onClose, onSubmit, isEditMode = false, teacherData = null }) => {
-  const classes = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'];
-  const subjects = ['Math', 'Science', 'English', 'History', 'Geography'];
+const AddTeacherModal = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  isEditMode = false,
+  teacherData = null,
+}) => {
+  const classes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const subjects = subjectsEnum ? Object.keys(subjectsEnum) : [];
 
   const formik = useFormik({
     initialValues: {
-      name: teacherData?.name || '',
-      email: teacherData?.email || '',
-      dateOfBirth: teacherData?.dateOfBirth || '',
-      dateOfEnrollment: teacherData?.dateOfEnrollment || '',
-      salary: teacherData?.salary || '',
-      class: teacherData?.class || '',
-      subjectId: teacherData?.subjectId || '',
-      qualification: teacherData?.qualification || '',
+      name: teacherData?.name || "",
+      email: teacherData?.email || "",
+      dateOfBirth: teacherData?.dateOfBirth || "",
+      dateOfEnrollment: teacherData?.dateOfEnrollment || "",
+      salary: teacherData?.salary || "",
+      class: teacherData?.class || "",
+      subjectId: teacherData?.subjectId || "",
+      qualification: teacherData?.qualification || "",
     },
     validationSchema,
     onSubmit: (values, { setSubmitting }) => {
-      onSubmit(values);
+      // Convert class and subjectId to integers
+      const payload = {
+        ...values,
+        class: parseInt(values.class, 10),
+        subjectId: parseInt(values.subjectId, 10),
+      };
+      onSubmit(payload); // call parent handler with converted values
       setSubmitting(false);
     },
   });
@@ -58,12 +70,12 @@ const AddTeacherModal = ({ isOpen, onClose, onSubmit, isEditMode = false, teache
               />
             </svg>
           </button>
-          
+
           <div className="p-5">
             <h3 className="text-2xl mb-0.5 font-medium">
-              {isEditMode ? 'Edit Teacher' : 'Add Teacher'}
+              {isEditMode ? "Edit Teacher" : "Add Teacher"}
             </h3>
-            
+
             <form className="w-full max-w-xl" onSubmit={formik.handleSubmit}>
               {/* Name Field */}
               <div>
@@ -76,11 +88,13 @@ const AddTeacherModal = ({ isOpen, onClose, onSubmit, isEditMode = false, teache
                     name="name"
                     placeholder="Enter name"
                     className="px-4 py-3.5 bg-white w-full text-sm border-2 border-gray-200 focus:bg-gray-100 focus:border-gray-400 focus:outline-none focus:shadow-outline-gray rounded outline-none"
-                    {...formik.getFieldProps('name')}
+                    {...formik.getFieldProps("name")}
                   />
                 </div>
                 {formik.touched.name && formik.errors.name && (
-                  <span className="text-[0.7rem] text-red-500">{formik.errors.name}</span>
+                  <span className="text-[0.7rem] text-red-500">
+                    {formik.errors.name}
+                  </span>
                 )}
               </div>
 
@@ -95,11 +109,13 @@ const AddTeacherModal = ({ isOpen, onClose, onSubmit, isEditMode = false, teache
                     name="email"
                     placeholder="Enter email"
                     className="px-4 py-3.5 bg-white w-full text-sm border-2 border-gray-200 focus:bg-gray-100 focus:border-gray-400 focus:outline-none focus:shadow-outline-gray rounded outline-none"
-                    {...formik.getFieldProps('email')}
+                    {...formik.getFieldProps("email")}
                   />
                 </div>
                 {formik.touched.email && formik.errors.email && (
-                  <span className="text-[0.7rem] text-red-500">{formik.errors.email}</span>
+                  <span className="text-[0.7rem] text-red-500">
+                    {formik.errors.email}
+                  </span>
                 )}
               </div>
 
@@ -114,14 +130,16 @@ const AddTeacherModal = ({ isOpen, onClose, onSubmit, isEditMode = false, teache
                       type="date"
                       name="dateOfBirth"
                       className="px-4 py-3.5 bg-white w-full text-sm border-2 border-gray-200 focus:bg-gray-100 focus:border-gray-400 focus:outline-none focus:shadow-outline-gray rounded outline-none"
-                      {...formik.getFieldProps('dateOfBirth')}
+                      {...formik.getFieldProps("dateOfBirth")}
                     />
                   </div>
                   {formik.touched.dateOfBirth && formik.errors.dateOfBirth && (
-                    <span className="text-[0.7rem] text-red-500">{formik.errors.dateOfBirth}</span>
+                    <span className="text-[0.7rem] text-red-500">
+                      {formik.errors.dateOfBirth}
+                    </span>
                   )}
                 </div>
-                
+
                 <div>
                   <div className="relative flex items-center mt-4">
                     <label className="text-[13px] bg-white absolute px-2 top-[-10px] left-[18px] font-semibold">
@@ -131,12 +149,15 @@ const AddTeacherModal = ({ isOpen, onClose, onSubmit, isEditMode = false, teache
                       type="date"
                       name="dateOfEnrollment"
                       className="px-4 py-3.5 bg-white w-full text-sm border-2 border-gray-200 focus:bg-gray-100 focus:border-gray-400 focus:outline-none focus:shadow-outline-gray rounded outline-none"
-                      {...formik.getFieldProps('dateOfEnrollment')}
+                      {...formik.getFieldProps("dateOfEnrollment")}
                     />
                   </div>
-                  {formik.touched.dateOfEnrollment && formik.errors.dateOfEnrollment && (
-                    <span className="text-[0.7rem] text-red-500">{formik.errors.dateOfEnrollment}</span>
-                  )}
+                  {formik.touched.dateOfEnrollment &&
+                    formik.errors.dateOfEnrollment && (
+                      <span className="text-[0.7rem] text-red-500">
+                        {formik.errors.dateOfEnrollment}
+                      </span>
+                    )}
                 </div>
               </div>
 
@@ -149,18 +170,24 @@ const AddTeacherModal = ({ isOpen, onClose, onSubmit, isEditMode = false, teache
                   <select
                     name="class"
                     className="px-4 py-3.5 bg-white w-full text-sm border-2 border-gray-200 focus:bg-gray-100 focus:border-gray-400 focus:outline-none focus:shadow-outline-gray rounded outline-none"
-                    {...formik.getFieldProps('class')}
+                    {...formik.getFieldProps("class")}
                   >
-                    <option value="" disabled>Select class</option>
+                    <option value="" disabled>
+                      Select class
+                    </option>
                     {classes.map((cls) => (
-                      <option key={cls} value={cls}>{cls}</option>
+                      <option key={cls} value={cls}>
+                        {cls}
+                      </option>
                     ))}
                   </select>
                   {formik.touched.class && formik.errors.class && (
-                    <span className="text-[0.7rem] text-red-500">{formik.errors.class}</span>
+                    <span className="text-[0.7rem] text-red-500">
+                      {formik.errors.class}
+                    </span>
                   )}
                 </div>
-                
+
                 <div>
                   <label className="text-[13px] bg-white absolute px-2 top-[-10px] right-[148px] font-semibold">
                     Salary
@@ -169,10 +196,12 @@ const AddTeacherModal = ({ isOpen, onClose, onSubmit, isEditMode = false, teache
                     type="number"
                     name="salary"
                     className="px-4 py-3.5 bg-white w-full text-sm border-2 border-gray-200 focus:bg-gray-100 focus:border-gray-400 focus:outline-none focus:shadow-outline-gray rounded outline-none"
-                    {...formik.getFieldProps('salary')}
+                    {...formik.getFieldProps("salary")}
                   />
                   {formik.touched.salary && formik.errors.salary && (
-                    <span className="text-[0.7rem] text-red-500">{formik.errors.salary}</span>
+                    <span className="text-[0.7rem] text-red-500">
+                      {formik.errors.salary}
+                    </span>
                   )}
                 </div>
               </div>
@@ -186,16 +215,22 @@ const AddTeacherModal = ({ isOpen, onClose, onSubmit, isEditMode = false, teache
                   <select
                     name="subjectId"
                     className="px-4 py-3.5 bg-white w-full text-sm border-2 border-gray-200 focus:bg-gray-100 focus:border-gray-400 focus:outline-none focus:shadow-outline-gray rounded outline-none"
-                    {...formik.getFieldProps('subjectId')}
+                    {...formik.getFieldProps("subjectId")}
                   >
-                    <option value="" disabled>Select subject</option>
+                    <option value="" disabled>
+                      Select subject
+                    </option>
                     {subjects.map((subject) => (
-                      <option key={subject} value={subject}>{subject}</option>
+                      <option key={subject} value={subjectsEnum[subject]}>
+                        {subject}
+                      </option>
                     ))}
                   </select>
                 </div>
                 {formik.touched.subjectId && formik.errors.subjectId && (
-                  <span className="text-[0.7rem] text-red-500">{formik.errors.subjectId}</span>
+                  <span className="text-[0.7rem] text-red-500">
+                    {formik.errors.subjectId}
+                  </span>
                 )}
               </div>
 
@@ -210,12 +245,15 @@ const AddTeacherModal = ({ isOpen, onClose, onSubmit, isEditMode = false, teache
                     name="qualification"
                     placeholder="Enter qualification"
                     className="px-4 py-3.5 bg-white w-full text-sm border-2 border-gray-200 focus:bg-gray-100 focus:border-gray-400 focus:outline-none focus:shadow-outline-gray rounded outline-none"
-                    {...formik.getFieldProps('qualification')}
+                    {...formik.getFieldProps("qualification")}
                   />
                 </div>
-                {formik.touched.qualification && formik.errors.qualification && (
-                  <span className="text-[0.7rem] text-red-500">{formik.errors.qualification}</span>
-                )}
+                {formik.touched.qualification &&
+                  formik.errors.qualification && (
+                    <span className="text-[0.7rem] text-red-500">
+                      {formik.errors.qualification}
+                    </span>
+                  )}
               </div>
 
               <button
@@ -223,7 +261,7 @@ const AddTeacherModal = ({ isOpen, onClose, onSubmit, isEditMode = false, teache
                 disabled={formik.isSubmitting}
                 className="inline-flex w-full items-center justify-center rounded-lg mt-4 bg-violet-600 p-2 py-3 text-sm font-medium text-white outline-none focus:ring-2 focus:ring-black focus:ring-offset-1 disabled:bg-gray-400"
               >
-                {formik.isSubmitting ? 'Saving...' : 'Save'}
+                {formik.isSubmitting ? "Saving..." : "Save"}
               </button>
             </form>
           </div>
